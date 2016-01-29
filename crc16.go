@@ -24,7 +24,7 @@ type Table [256]uint16
 var IBMTable = makeTable(IBM)
 
 // CCITTTable is the table for the CCITT polynomial.
-var CCITTTable = makeTable(CCITT)
+var CCITTTable = makeBitsReversedTable(CCITT)
 
 // SCSITable is the table for the SCSI polynomial.
 var SCSITable = makeTable(SCSI)
@@ -35,6 +35,23 @@ func MakeTable(poly uint16) *Table {
 }
 
 // makeTable returns the Table constructed from the specified polynomial.
+func makeBitsReversedTable(poly uint16) *Table {
+	t := new(Table)
+	width := uint16(16)
+	for i := uint16(0); i < 256; i++ {
+		crc := i << (width - 8)
+		for j := 0; j < 8; j++ {
+			if crc&(1<<(width-1)) != 0 {
+				crc = (crc << 1) ^ poly
+			} else {
+				crc <<= 1
+			}
+		}
+		t[i] = crc
+	}
+	return t
+}
+
 func makeTable(poly uint16) *Table {
 	t := new(Table)
 	for i := 0; i < 256; i++ {
@@ -49,6 +66,13 @@ func makeTable(poly uint16) *Table {
 		t[i] = crc
 	}
 	return t
+}
+
+func updateBitsReversed(crc uint16, tab *Table, p []byte) uint16 {
+	for _, v := range p {
+		crc = tab[byte(crc>>8)^v] ^ (crc << 8)
+	}
+	return crc
 }
 
 func update(crc uint16, tab *Table, p []byte) uint16 {
@@ -74,7 +98,7 @@ func ChecksumIBM(data []byte) uint16 { return update(0, IBMTable, data) }
 
 // ChecksumCCITT returns the CRC-16 checksum of data
 // using the CCITT polynomial.
-func ChecksumCCITT(data []byte) uint16 { return update(0, CCITTTable, data) }
+func ChecksumCCITT(data []byte) uint16 { return updateBitsReversed(0xffff, CCITTTable, data) }
 
 // ChecksumSCSI returns the CRC-16 checksum of data
 // using the SCSI polynomial.
