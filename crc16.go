@@ -6,13 +6,14 @@ package crc16
 
 // Predefined polynomials.
 const (
-	// Used by Bisync, Modbus, USB, ANSI X3.28, SIA DC-07, ...
+	// IBM is used by Bisync, Modbus, USB, ANSI X3.28, SIA DC-07, ...
 	IBM = 0xA001
 
-	// Used by X.25, V.41, HDLC FCS, XMODEM, Bluetooth, PACTOR, SD, ...
-	CCITT = 0x8408
+	// CCITT is used by X.25, V.41, HDLC FCS, XMODEM, Bluetooth, PACTOR, SD, ...
+	// CCITT forward is 0x8408. Reverse is 0x1021. And we do CCITT in reverse.
+	CCITT = 0x1021
 
-	// Used by SCSI
+	// SCSI is used by SCSI
 	SCSI = 0xEDD1
 )
 
