@@ -10,8 +10,9 @@ const (
 	IBM = 0xA001
 
 	// CCITT is used by X.25, V.41, HDLC FCS, XMODEM, Bluetooth, PACTOR, SD, ...
-	// CCITT forward is 0x8408. Reverse is 0x1021. And we do CCITT in reverse.
-	CCITT = 0x1021
+	// CCITT forward is 0x8408. Reverse is 0x1021.
+	CCITT      = 0x8408
+	CCITTFalse = 0x1021
 
 	// SCSI is used by SCSI
 	SCSI = 0xEDD1
@@ -24,7 +25,10 @@ type Table [256]uint16
 var IBMTable = makeTable(IBM)
 
 // CCITTTable is the table for the CCITT polynomial.
-var CCITTTable = makeBitsReversedTable(CCITT)
+var CCITTTable = makeTable(CCITT)
+
+// CCITTFalseTable is the table for CCITT-FALSE.
+var CCITTFalseTable = makeBitsReversedTable(CCITTFalse)
 
 // SCSITable is the table for the SCSI polynomial.
 var SCSITable = makeTable(SCSI)
@@ -96,9 +100,14 @@ func Checksum(data []byte, tab *Table) uint16 { return Update(0, tab, data) }
 // using the IBM polynomial.
 func ChecksumIBM(data []byte) uint16 { return update(0, IBMTable, data) }
 
+// ChecksumCCITTFalse returns the CRC-16 checksum using
+// what some call the CCITT-False polynomial, which matches what is used
+// by Perl Digest/CRC and Boost for example.
+func ChecksumCCITTFalse(data []byte) uint16 { return updateBitsReversed(0xffff, CCITTFalseTable, data) }
+
 // ChecksumCCITT returns the CRC-16 checksum of data
 // using the CCITT polynomial.
-func ChecksumCCITT(data []byte) uint16 { return updateBitsReversed(0xffff, CCITTTable, data) }
+func ChecksumCCITT(data []byte) uint16 { return update(0, CCITTTable, data) }
 
 // ChecksumSCSI returns the CRC-16 checksum of data
 // using the SCSI polynomial.
