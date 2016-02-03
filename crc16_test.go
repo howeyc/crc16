@@ -35,3 +35,13 @@ func BenchmarkMakeTable(b *testing.B) {
 		MakeTable(0xA001)
 	}
 }
+
+func TestCCITTFalse(t *testing.T) {
+	data := []byte("testdata")
+	target := uint16(0xDC7C)
+
+	actual := ChecksumCCITTFalse(data)
+	if actual != target {
+		t.Fatalf("CCITT checksum did not return the correct value, expected %x, received %x", target, actual)
+	}
+}
