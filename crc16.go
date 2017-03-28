@@ -17,6 +17,7 @@ const (
 	// SCSI is used by SCSI
 	SCSI = 0xEDD1
 
+	// MBUS is used by Meter-Bus, DNP, ...
 	MBUS = 0x3D65
 )
 
@@ -38,6 +39,7 @@ var CCITTFalseTable = makeBitsReversedTable(CCITTFalse)
 // SCSITable is the table for the SCSI polynomial.
 var SCSITable = makeTable(SCSI)
 
+// MBusTable is the tabe used for Meter-Bus polynomial.
 var MBusTable = makeBitsReversedTable(MBUS)
 
 // MakeTable returns the Table constructed from the specified polynomial.
