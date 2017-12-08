@@ -107,6 +107,19 @@ func update(crc uint16, tab *Table, p []byte) uint16 {
 	return ^crc
 }
 
+func updateNoXOR(crc uint16, tab *Table, p []byte) uint16 {
+	for _, v := range p {
+		crc = tab.entries[byte(crc)^v] ^ (crc >> 8)
+	}
+
+	return crc
+}
+
+// UpdateNoXOR is the same Update, but without XOR in and XOR out
+func UpdateNoXOR(crc uint16, tab *Table, p []byte) uint16 {
+	return updateNoXOR(crc, tab, p)
+}
+
 // Update returns the result of adding the bytes in p to the crc.
 func Update(crc uint16, tab *Table, p []byte) uint16 {
 	if tab.reversed {
@@ -119,6 +132,9 @@ func Update(crc uint16, tab *Table, p []byte) uint16 {
 // Checksum returns the CRC-16 checksum of data
 // using the polynomial represented by the Table.
 func Checksum(data []byte, tab *Table) uint16 { return Update(0, tab, data) }
+
+// ChecksumNoXOR is the same as Checksum, but with no XOR in and no XOR out
+func ChecksumNoXOR(data []byte, tab *Table) uint16 { return UpdateNoXOR(0, tab, data) }
 
 // ChecksumIBM returns the CRC-16 checksum of data
 // using the IBM polynomial.
