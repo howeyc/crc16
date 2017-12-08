@@ -18,6 +18,17 @@ The package provides [the following](https://godoc.org/github.com/howeyc/crc16#p
 checksum := crc16.ChecksumIBM(data)
 ```
 
+Using the [hash.Hash](https://godoc.org/hash#Hash) interface also works.
+```go
+h := crc16.New(crc16.IBMTable)
+data := byte("test")
+data2 := byte("data")
+h.Write(data)
+h.Write(data2)
+checksum := h.Sum(nil)
+```
+
 ## Changelog
-* 27.03.2017 - Added MBus checksum
-* 27.05.2017 - Added checksum function without XOR
+* 2017.03.27 - Added MBus checksum
+* 2017.05.27 - Added checksum function without XOR
+* 2017.12.08 - Implement encoding.BinaryMarshaler and encoding.BinaryUnmarshaler to allow saving and recreating their internal state.
