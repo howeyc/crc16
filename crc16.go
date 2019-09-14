@@ -32,7 +32,8 @@ type Table struct {
 var IBMTable = makeTable(IBM)
 
 // CCITTTable is the table for the CCITT polynomial.
-var CCITTTable = makeTable(CCITT)
+//var CCITTTable = makeTable(CCITT)
+var CCITTTable = MakeTableNoXOR(CCITT)
 
 // CCITTFalseTable is the table for CCITT-FALSE.
 var CCITTFalseTable = makeBitsReversedTable(CCITTFalse)

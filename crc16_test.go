@@ -34,7 +34,7 @@ func TestModbus(t *testing.T) {
 		{[]byte("123456789"), 0x4B37},
 		{[]byte{0x0D, 0x01, 0x00, 0x62, 0x00, 0x33}, 0x0DDD},
 		{[]byte{0x01, 0x03, 0x00, 0x85, 0x00, 0x01}, 0xE395},
-		}
+	}
 	for _, testcase := range tests {
 		result := ^ChecksumIBM(testcase.Message)
 		if testcase.CRC != result {
@@ -60,6 +60,16 @@ func TestCCITTFalse(t *testing.T) {
 	target := uint16(0xDC7C)
 
 	actual := ChecksumCCITTFalse(data)
+	if actual != target {
+		t.Fatalf("CCITTFalse checksum did not return the correct value, expected %x, received %x", target, actual)
+	}
+}
+
+func TestCCITT(t *testing.T) {
+	data := []byte("123456789")
+	target := uint16(0x2189)
+
+	actual := ChecksumCCITT(data)
 	if actual != target {
 		t.Fatalf("CCITT checksum did not return the correct value, expected %x, received %x", target, actual)
 	}
