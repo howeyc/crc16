@@ -66,12 +66,16 @@ func TestCCITTFalse(t *testing.T) {
 }
 
 func TestCCITT(t *testing.T) {
-	data := []byte("123456789")
-	target := uint16(0x2189)
+	data := []byte("1234567890")
+	target := uint16(0x286B)
 
 	actual := ChecksumCCITT(data)
 	if actual != target {
 		t.Fatalf("CCITT checksum did not return the correct value, expected %x, received %x", target, actual)
+	}
+	data = append(data, 0x6B, 0x28)
+	if res := ChecksumCCITT(data); res != 0 {
+		t.Fatalf("CCITT checksum inc cksum did not return 0, received %x", res)
 	}
 }
 
